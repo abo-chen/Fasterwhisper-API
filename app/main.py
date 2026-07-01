@@ -123,10 +123,12 @@ class ModelState:
                         if os.path.isdir(CACHE_DIR):
                             from huggingface_hub import scan_cache_dir
                             cache = scan_cache_dir(CACHE_DIR)
-                            # Check if matching model cache exists / 检查是否有匹配的模型缓存
-                            model_repo = f"Systran/faster-whisper-{base_model_name}"
+                            # Check if matching model cache exists (match by suffix so non-Systran
+                            # repos also work, e.g. mobiuslabsgmbh/faster-whisper-large-v3-turbo)
+                            # 检查是否有匹配的模型缓存（按后缀匹配，兼容 Systran / mobiuslabsgmbh 等不同组织仓库）
+                            model_suffix = f"faster-whisper-{base_model_name}"
                             cached_repos = [repo.repo_id for repo in cache.repos]
-                            if model_repo in cached_repos:
+                            if any(r.endswith(model_suffix) for r in cached_repos):
                                 local_files_only = True
                                 logger.info(f"Model {base_model_name} exists locally, using offline mode / 本地已存在模型 {base_model_name}，使用离线模式")
                             else:
@@ -151,7 +153,7 @@ class ModelState:
                         self.model = WhisperModel(
                             model_size_or_path=base_model_name,
                             device=DEVICE,
-                            device_index=0 if DEVICE == "cuda" else None,
+                            device_index=0,
                             compute_type=COMPUTE_TYPE,
                             cpu_threads=THREADS if DEVICE == "cpu" else 0,
                             num_workers=1,
