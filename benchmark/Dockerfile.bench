@@ -1,0 +1,7 @@
+# Benchmark image: proven whisper-stt env (CUDA + faster-whisper on Blackwell)
+# plus lightweight measurement libs.
+FROM whisper-stt:latest
+
+RUN apt-get update && apt-get install -y --no-install-recommends libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+RUN uv pip install --system pynvml soundfile

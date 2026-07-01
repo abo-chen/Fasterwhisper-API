@@ -1,0 +1,12 @@
+{
+  "mode": "int8_gpu",
+  "status": "unsupported",
+  "device": "cuda",
+  "compute_types_tested": ["int8", "int8_float16", "int8_float32"],
+  "error": "RuntimeError: cuBLAS failed with status CUBLAS_STATUS_NOT_SUPPORTED",
+  "reason": "在 RTX 5060 Ti (Blackwell, sm_120) 上，ctranslate2 4.7.1 自带的 cuBLAS 不支持 int8 GEMM；三种 int8 计算类型(int8 / int8_float16 / int8_float32) 加载后在首次推理即抛出 CUBLAS_STATUS_NOT_SUPPORTED。fp16 与 CPU int8 不受影响。",
+  "load_time_sec": 1.238,
+  "gpu_after_load_mb": 1184,
+  "rss_after_load_mb": 2191,
+  "runs": []
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Faster-Whisper large-v3-turbo 性能基准报告</title><style>
+    :root{--bg:#0b1020;--card:#141b30;--ink:#e8edf7;--mut:#8b97b3;--acc:#3b82f6;--line:#27314f}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+      font:15px/1.55 -apple-system,Segoe UI,Roboto,"PingFang SC","Microsoft YaHei",sans-serif}
+    .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+    header h1{font-size:26px;margin:0 0 4px}header .sub{color:var(--mut);font-size:14px}
+    .meta{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+    .chip{background:var(--card);border:1px solid var(--line);padding:5px 12px;border-radius:999px;font-size:13px;color:var(--mut)}
+    .chip b{color:var(--ink)}
+    section{margin:34px 0}section h2{font-size:18px;border-left:3px solid var(--acc);padding-left:10px;margin:0 0 14px}
+    section h3{font-size:15px;color:var(--mut);font-weight:600;margin:18px 0 8px}
+    table.data{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:14px}
+    table.data th,table.data td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}
+    table.data th{background:#1a2340;color:var(--mut);font-weight:600;font-size:13px}
+    table.data td.lang,table.data td.mode{text-align:left;font-weight:600}
+    table.data dense td,table.data.dense td{padding:6px 8px}
+    table.data tbody tr:hover{background:#1a2340}
+    td.muted{color:var(--mut)}td.small{font-size:12px}
+    .warn{color:#f59e0b;font-weight:600;background:rgba(245,158,11,.08)}
+    .callout{background:rgba(245,158,11,.08);border:1px solid #b45309;border-left:4px solid #f59e0b;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14px}
+    .callout b{color:#fbbf24}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:6px 0}
+    .kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+    .kpi .k{color:var(--mut);font-size:12px}.kpi .v{font-size:22px;font-weight:700;margin-top:4px}
+    .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+    .card h4{margin:0 0 8px;font-size:14px}
+    .preview{font-size:13px;color:#cdd6ea;margin:0;white-space:pre-wrap}
+    .chart{width:100%;height:auto;display:block;background:var(--card);border:1px solid var(--line);border-radius:10px}
+    .chart .clab{fill:var(--mut);font-size:12px}.chart .cval{fill:var(--ink);font-size:12px}
+    .note{color:var(--mut);font-size:13px;margin:8px 0 0}
+    .insight{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:14px}
+    footer{color:var(--mut);font-size:12px;margin-top:40px;border-top:1px solid var(--line);padding-top:14px}
+    a{color:var(--acc)}
+    </style></head><body>
+<div class="wrap">
+<header>
+  <h1>Faster-Whisper <span style="color:var(--acc)">large-v3-turbo</span> 性能基准</h1>
+  <div class="sub">fp16 / int8 GPU 与 CPU 模式 · 中文 / 英文 / 粤语 · 10s / 25s / 45s</div>
+</header>
+<div class="meta">
+  <span class="chip">测试时间 <b>2026-06-28 15:11</b></span>
+  <span class="chip">GPU <b>NVIDIA GeForce RTX 5060 Ti</b></span>
+  <span class="chip">CPU <b>Intel(R) Core(TM) i7-14700K</b></span>
+  <span class="chip">引擎 <b>ctranslate2 4.7.1 / faster-whisper 1.2.1</b></span>
+  <span class="chip">模型 <b>mobiuslabsgmbh/faster-whisper-large-v3-turbo</b></span>
+  <span class="chip">TTS <b>Fun-CosyVoice :9880</b></span>
+</div>
+<div class="insight">• GPU fp16 相比 CPU int8 在中文 45s 上提速约 <b>3.6×</b></div>
+<div class="callout"><b>⚠ int8 GPU 模式在本机不可用。</b> RuntimeError: cuBLAS failed with status CUBLAS_STATUS_NOT_SUPPORTED —— 在 RTX 5060 Ti (Blackwell, sm_120) 上，ctranslate2 4.7.1 自带的 cuBLAS 不支持 int8 GEMM；三种 int8 计算类型(int8 / int8_float16 / int8_float32) 加载后在首次推理即抛出 CUBLAS_STATUS_NOT_SUPPORTED。fp16 与 CPU int8 不受影响。<br>已实测三种 int8 计算类型 <code>int8</code> / <code>int8_float16</code> / <code>int8_float32</code> 均在首次推理失败；故本报告 int8 GPU 列以「不支持」标注。fp16 GPU 与 CPU int8 正常。</div>
+
+<section>
+<h2>1 · 推理速度（中位耗时 / RTF）</h2>
+<p class="note">每条音频先 1 次预热丢弃，再连续测 3 次取中位数；RTF = 耗时 / 音频时长（&lt;1 即快于实时）。</p>
+<table class="data"><thead><tr><th>语言</th><th>时长</th><th colspan="2">GPU · fp16</th><th colspan="2">GPU · int8_float16</th><th colspan="2">CPU · int8</th></tr><tr><th></th><th></th><th>耗时(s)</th><th>RTF</th><th>耗时(s)</th><th>RTF</th><th>耗时(s)</th><th>RTF</th></tr></thead><tbody><tr><td class="lang">中文</td><td>10s</td><td>0.849</td><td>0.085</td><td colspan="2" class="warn">⚠ 不支持</td><td>3.959</td><td>0.396</td></tr><tr><td class="lang">中文</td><td>25s</td><td>1.650</td><td>0.066</td><td colspan="2" class="warn">⚠ 不支持</td><td>4.838</td><td>0.194</td></tr><tr><td class="lang">中文</td><td>45s</td><td>2.988</td><td>0.066</td><td colspan="2" class="warn">⚠ 不支持</td><td>10.830</td><td>0.241</td></tr><tr><td class="lang">English</td><td>10s</td><td>0.743</td><td>0.074</td><td colspan="2" class="warn">⚠ 不支持</td><td>2.812</td><td>0.281</td></tr><tr><td class="lang">English</td><td>25s</td><td>1.060</td><td>0.042</td><td colspan="2" class="warn">⚠ 不支持</td><td>2.923</td><td>0.117</td></tr><tr><td class="lang">English</td><td>45s</td><td>2.031</td><td>0.045</td><td colspan="2" class="warn">⚠ 不支持</td><td>5.925</td><td>0.132</td></tr><tr><td class="lang">粤语</td><td>10s</td><td>0.808</td><td>0.081</td><td colspan="2" class="warn">⚠ 不支持</td><td>2.815</td><td>0.281</td></tr><tr><td class="lang">粤语</td><td>25s</td><td>1.438</td><td>0.058</td><td colspan="2" class="warn">⚠ 不支持</td><td>5.988</td><td>0.239</td></tr><tr><td class="lang">粤语</td><td>45s</td><td>5.506</td><td>0.122</td><td colspan="2" class="warn">⚠ 不支持</td><td>6.918</td><td>0.154</td></tr></tbody></table>
+</section>
+
+<section>
+<h2>2 · 速度对比图</h2>
+<h3>45s 音频推理耗时（越短越快）</h3>
+<svg viewBox="0 0 620 210" class="chart" role="img" aria-label="45s 音频推理耗时 (s，越短越快)">
+<text x="0" y="23.4" class="clab">fp16·中文 45s</text>
+<rect x="150" y="8" width="88.8" height="22" rx="3" fill="#2563eb"/>
+<text x="244.8" y="23.4" class="cval">2.99 s</text>
+<text x="0" y="53.4" class="clab">fp16·English 45s</text>
+<rect x="150" y="38" width="60.3" height="22" rx="3" fill="#2563eb"/>
+<text x="216.3" y="53.4" class="cval">2.03 s</text>
+<text x="0" y="83.4" class="clab">fp16·粤语 45s</text>
+<rect x="150" y="68" width="163.6" height="22" rx="3" fill="#2563eb"/>
+<text x="319.6" y="83.4" class="cval">5.51 s</text>
+<text x="0" y="113.4" class="clab">cpu·中文 45s</text>
+<rect x="150" y="98" width="321.7" height="22" rx="3" fill="#dc2626"/>
+<text x="477.7" y="113.4" class="cval">10.83 s</text>
+<text x="0" y="143.4" class="clab">cpu·English 45s</text>
+<rect x="150" y="128" width="176.0" height="22" rx="3" fill="#dc2626"/>
+<text x="332.0" y="143.4" class="cval">5.93 s</text>
+<text x="0" y="173.4" class="clab">cpu·粤语 45s</text>
+<rect x="150" y="158" width="205.5" height="22" rx="3" fill="#dc2626"/>
+<text x="361.5" y="173.4" class="cval">6.92 s</text>
+</svg>
+<h3>RTF（45s 平均，越低越快）</h3>
+<svg viewBox="0 0 620 90" class="chart" role="img" aria-label="RTF (45s 平均，越低越快)">
+<text x="0" y="23.4" class="clab">GPU · fp16 (45s 均值)</text>
+<rect x="150" y="8" width="143.0" height="22" rx="3" fill="#2563eb"/>
+<text x="299.0" y="23.4" class="cval">0.08</text>
+<text x="0" y="53.4" class="clab">CPU · int8 (45s 均值)</text>
+<rect x="150" y="38" width="321.7" height="22" rx="3" fill="#dc2626"/>
+<text x="477.7" y="53.4" class="cval">0.18</text>
+</svg>
+</section>
+
+<section>
+<h2>3 · 显存与内存占用</h2>
+<table class="data"><thead><tr>
+        <th>模式</th><th>模型加载后显存</th><th>推理峰值显存</th><th>峰值内存 (RSS)</th><th>模型加载耗时</th>
+        </tr></thead><tbody><tr><td class='mode'>GPU · fp16</td><td>2208 MB</td><td>2500 MB</td><td>2179 MB</td><td>0.78 s</td></tr><tr><td class='mode'>GPU · int8_float16</td><td colspan='4' class='warn'>⚠ 不支持 —— RuntimeError: cuBLAS failed with status CUBLAS_STATUS_NOT_SUPPORTED<br><span class='small'>在 RTX 5060 Ti (Blackwell, sm_120) 上，ctranslate2 4.7.1 自带的 cuBLAS 不支持 int8 GEMM；三种 int8 计算类型(int8 / int8_float16 / int8_float32) 加载后在首次推理即抛出 CUBLAS_STATUS_NOT_SUPPORTED。fp16 与 CPU int8 不受影响。</span></td></tr><tr><td class='mode'>CPU · int8</td><td>0 MB</td><td>0 MB</td><td>2081 MB</td><td>1.12 s</td></tr></tbody></table>
+        <p class="note">显存为加载/推理后该进程的占用（NVML 按 PID 统计）；
+        RSS 为进程峰值驻留内存。CPU 模式无显存。</p>
+<h3>推理峰值显存对比</h3>
+<svg viewBox="0 0 620 60" class="chart" role="img" aria-label="推理峰值显存 (MB)">
+<text x="0" y="23.4" class="clab">GPU · fp16</text>
+<rect x="150" y="8" width="321.7" height="22" rx="3" fill="#2563eb"/>
+<text x="477.7" y="23.4" class="cval">2500.00</text>
+</svg>
+</section>
+
+<section>
+<h2>4 · 全量明细（最快 / 最慢 / 3 次原始）</h2>
+<table class="data dense"><thead><tr>
+        <th>模式</th><th>语言</th><th>时长</th><th>中位耗时</th><th>最快</th><th>最慢</th>
+        <th>RTF</th><th>显存峰值</th><th>3 次 (s)</th></tr></thead><tbody><tr><td>GPU · fp16</td><td>中文</td><td>10s</td><td>0.849</td><td>0.845</td><td>0.862</td><td>0.085</td><td>2500</td><td class='muted small'>0.849 / 0.862 / 0.845</td></tr><tr><td>GPU · fp16</td><td>中文</td><td>25s</td><td>1.650</td><td>1.644</td><td>1.651</td><td>0.066</td><td>2500</td><td class='muted small'>1.644 / 1.651 / 1.650</td></tr><tr><td>GPU · fp16</td><td>中文</td><td>45s</td><td>2.988</td><td>2.985</td><td>2.988</td><td>0.066</td><td>2500</td><td class='muted small'>2.988 / 2.988 / 2.985</td></tr><tr><td>GPU · fp16</td><td>English</td><td>10s</td><td>0.743</td><td>0.737</td><td>0.745</td><td>0.074</td><td>2500</td><td class='muted small'>0.737 / 0.743 / 0.745</td></tr><tr><td>GPU · fp16</td><td>English</td><td>25s</td><td>1.060</td><td>1.060</td><td>1.066</td><td>0.042</td><td>2500</td><td class='muted small'>1.066 / 1.060 / 1.060</td></tr><tr><td>GPU · fp16</td><td>English</td><td>45s</td><td>2.031</td><td>2.030</td><td>2.039</td><td>0.045</td><td>2500</td><td class='muted small'>2.039 / 2.031 / 2.030</td></tr><tr><td>GPU · fp16</td><td>粤语</td><td>10s</td><td>0.808</td><td>0.808</td><td>0.813</td><td>0.081</td><td>2500</td><td class='muted small'>0.808 / 0.808 / 0.813</td></tr><tr><td>GPU · fp16</td><td>粤语</td><td>25s</td><td>1.438</td><td>1.437</td><td>1.455</td><td>0.058</td><td>2500</td><td class='muted small'>1.438 / 1.437 / 1.455</td></tr><tr><td>GPU · fp16</td><td>粤语</td><td>45s</td><td>5.506</td><td>4.758</td><td>5.570</td><td>0.122</td><td>2500</td><td class='muted small'>4.758 / 5.570 / 5.506</td></tr><tr><td>CPU · int8</td><td>中文</td><td>10s</td><td>3.959</td><td>2.562</td><td>4.489</td><td>0.396</td><td>0</td><td class='muted small'>2.562 / 4.489 / 3.959</td></tr><tr><td>CPU · int8</td><td>中文</td><td>25s</td><td>4.838</td><td>4.460</td><td>5.105</td><td>0.194</td><td>0</td><td class='muted small'>4.838 / 5.105 / 4.460</td></tr><tr><td>CPU · int8</td><td>中文</td><td>45s</td><td>10.830</td><td>9.756</td><td>12.344</td><td>0.241</td><td>0</td><td class='muted small'>12.344 / 10.830 / 9.756</td></tr><tr><td>CPU · int8</td><td>English</td><td>10s</td><td>2.812</td><td>2.647</td><td>2.901</td><td>0.281</td><td>0</td><td class='muted small'>2.901 / 2.647 / 2.812</td></tr><tr><td>CPU · int8</td><td>English</td><td>25s</td><td>2.923</td><td>2.904</td><td>3.126</td><td>0.117</td><td>0</td><td class='muted small'>2.923 / 3.126 / 2.904</td></tr><tr><td>CPU · int8</td><td>English</td><td>45s</td><td>5.925</td><td>5.581</td><td>6.138</td><td>0.132</td><td>0</td><td class='muted small'>5.581 / 5.925 / 6.138</td></tr><tr><td>CPU · int8</td><td>粤语</td><td>10s</td><td>2.815</td><td>2.629</td><td>2.867</td><td>0.281</td><td>0</td><td class='muted small'>2.629 / 2.815 / 2.867</td></tr><tr><td>CPU · int8</td><td>粤语</td><td>25s</td><td>5.988</td><td>5.923</td><td>6.021</td><td>0.239</td><td>0</td><td class='muted small'>6.021 / 5.988 / 5.923</td></tr><tr><td>CPU · int8</td><td>粤语</td><td>45s</td><td>6.918</td><td>6.813</td><td>7.232</td><td>0.154</td><td>0</td><td class='muted small'>6.813 / 7.232 / 6.918</td></tr></tbody></table>
+</section>
+
+<section>
+<h2>5 · 转写示例（质量抽检）</h2>
+<p class="note">取自 25s 音频，用于确认各语言识别正常（尤其粤语）。</p>
+<div class="grid3"><div class="card"><h4>中文 (25s)</h4><p class="preview">大家好,欢迎收听今天的节目。 人工智能技术在过去几年里取得了飞速的发展, 语音识别作为人机交互的重要入口, 已经广泛应用于会议记录、字幕生成、 智能客服和车载助手等众多场景。 今天,我们要测试的是一款基于大模型的语音识别系统, 它能够用于语</p></div><div class="card"><h4>English (25s)</h4><p class="preview">Hello, everyone, and welcome to today&#x27;s presentation.  Over the past few years, artificial intelligence has advanced at </p></div><div class="card"><h4>粤语 (25s)</h4><p class="preview">大家好,欢迎收听今天的gapmo 人工智能基出是过去几年,入面发展得很快 如因失别作为人机复动的重要入口 已经广泛形容是唯意记落 字幕生残 只能够覆和迷车仔住守景多的场景 今日我的妖妾是一途机遇遇遇大無成的语音事必帝</p></div></div>
+</section>
+
+<section>
+<h2>6 · API 层基准（调用运行中的服务）</h2>
+<p class="note">通过 HTTP <code>/v1/audio/transcriptions</code> 调用已部署服务（model=<code>mobiuslabsgmbh/faster-whisper-large-v3-turbo</code>），测端到端耗时（上传+识别+返回）。GPU 走线上 whisper-gpu0(:5012)，CPU 走临时 CPU 实例(:5014)。</p>
+<table class="data"><thead><tr><th>语言</th><th>时长</th><th colspan="2">API · GPU fp16</th><th colspan="2">API · CPU int8</th></tr><tr><th></th><th></th><th>端到端耗时(s)</th><th>RTF</th><th>端到端耗时(s)</th><th>RTF</th></tr></thead><tbody><tr><td class="lang">中文</td><td>10s</td><td>0.492</td><td>0.049</td><td>2.763</td><td>0.276</td></tr><tr><td class="lang">中文</td><td>25s</td><td>0.624</td><td>0.025</td><td>3.299</td><td>0.132</td></tr><tr><td class="lang">中文</td><td>45s</td><td>1.156</td><td>0.026</td><td>7.005</td><td>0.156</td></tr><tr><td class="lang">English</td><td>10s</td><td>0.467</td><td>0.047</td><td>2.631</td><td>0.263</td></tr><tr><td class="lang">English</td><td>25s</td><td>0.893</td><td>0.036</td><td>5.334</td><td>0.213</td></tr><tr><td class="lang">English</td><td>45s</td><td>1.000</td><td>0.022</td><td>5.412</td><td>0.120</td></tr><tr><td class="lang">粤语</td><td>10s</td><td>0.479</td><td>0.048</td><td>2.732</td><td>0.273</td></tr><tr><td class="lang">粤语</td><td>25s</td><td>0.966</td><td>0.039</td><td>5.899</td><td>0.236</td></tr><tr><td class="lang">粤语</td><td>45s</td><td>1.119</td><td>0.025</td><td>6.549</td><td>0.145</td></tr></tbody></table>
+<div class="callout"><b>⚠ 发现并修复 CPU 模式 Bug。</b> 服务原代码 <code>app/main.py</code> 在 CPU 分支传 <code>device_index=None</code>，而 ctranslate2 要求整数 → CPU 模式加载即抛 <code>incompatible constructor arguments</code> (HTTP 500)。已改为 <code>device_index=0</code> 修复后才测出上表 CPU 数据。建议合并此一行修复。</div>
+<h3>服务内存占用（稳态）</h3>
+<p class="note">GPU 服务 turbo 加载后显存 ~2308 MiB（推理峰值见第 3 节 ~2500 MiB）；CPU 服务稳态 RSS ~1.38 GiB（推理峰值 ~2.1 GB）。</p>
+<p class="note"><b>与引擎层差异说明：</b>本服务默认 <code>beam_size=1 + word_timestamps=True</code> （贪心解码），比第 1 节引擎层基准的 <code>beam_size=5</code> 显著更快（GPU 上约 2.5×），代价是略低的识别稳健性。故 API 数字与引擎层数字是<b>不同解码配置</b>，不宜直接横比。</p>
+</section>
+
+
+<section>
+<h2>7 · 方法论与说明</h2>
+<ul style="color:var(--mut);font-size:14px;line-height:1.8">
+<li><b>音频</b>：由 Fun-CosyVoice (:9880, OpenAI 兼容 <code>/v1/audio/speech</code>) 合成
+中文/英文/粤语长语音，再用 ffmpeg 精确切到 10/25/45s（24kHz 单声道 16bit PCM）。</li>
+<li><b>预热</b>：每个模式加载模型后先跑 1 次 10s 短音频并丢弃结果，消除 CUDA/cuDNN
+内核 autotuning、PTX JIT 与惰性显存分配带来的首次冷启动开销（实测首帧可比热态慢 ~15×）。</li>
+<li><b>重复</b>：每条音频测 3 次，取<b>中位数</b>为主数值，并给出最快/最慢；显存取峰值。</li>
+<li><b>配置</b>：beam_size=5，VAD 关闭，强制传入语言（跳过语种检测），word_timestamps 关闭；
+CPU 模式 cpu_threads=8（与部署配置 <code>WHISPER_THREADS=8</code> 一致）。</li>
+<li><b>显存统计</b>：通过 NVML 按 PID 获取该推理进程的真实占用（含 ctranslate2 缓冲），
+而非 torch 分配器口径。</li>
+<li><b>GPU 共享</b>：基准运行在与线上服务共享的 GPU 0（同机还驻留 LLM 等服务），
+属真实部署条件；同一 GPU 下三种模式横向对比仍然公平。</li>
+<li>原始 JSON（引擎层）：<code>results/fp16_gpu.json</code> · <code>int8_gpu.json</code> · <code>cpu.json</code>；
+（API 层）：<code>results/api_fp16_gpu.json</code> · <code>api_cpu.json</code>。逐次日志：<code>logs/*.log</code>；音频：<code>audio/</code>。</li>
+<li><b>引擎层 vs API 层</b>：引擎层直连 faster-whisper 库（beam_size=5，量 per-PID 显存）；
+API 层走 HTTP 服务（beam_size=1）。两套均含预热+3 次取中位。</li>
+</ul>
+</section>
+
+<footer>Generated by benchmark/report.py · Faster-Whisper STT · 2026-06-28 15:11</footer>
+</div></body></html>

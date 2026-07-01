@@ -1,0 +1,152 @@
+{
+  "label": "API · CPU int8",
+  "base_url": "http://localhost:5014",
+  "model": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+  "repeats": 3,
+  "runs": [
+    {
+      "file": "zh_10s.wav",
+      "lang": "zh",
+      "lang_name": "中文",
+      "duration_sec": 10.0,
+      "times_sec": [
+        2.7632,
+        2.7359,
+        3.168
+      ],
+      "median_sec": 2.7632,
+      "min_sec": 2.7359,
+      "max_sec": 3.168,
+      "rtf": 0.2763,
+      "text_preview": "大家好,欢迎收听今天的节目人工智能技术在过去几年里取得了飞速的发展语音识别作为人机交互的重要性"
+    },
+    {
+      "file": "zh_25s.wav",
+      "lang": "zh",
+      "lang_name": "中文",
+      "duration_sec": 25.0,
+      "times_sec": [
+        2.998,
+        3.2985,
+        3.3537
+      ],
+      "median_sec": 3.2985,
+      "min_sec": 2.998,
+      "max_sec": 3.3537,
+      "rtf": 0.1319,
+      "text_preview": "大家好,欢迎收听今天的节目。人工智能技术在过去几年里取得了飞速的发展,语音识别作为人机交互的重要入口,已经广泛应用于会议记录、字幕生成、智能客服和车载助手等众多场景。今天,我们要测试的是一款基于大模型的语音识别系统,它能够用于会议计器。"
+    },
+    {
+      "file": "zh_45s.wav",
+      "lang": "zh",
+      "lang_name": "中文",
+      "duration_sec": 45.0,
+      "times_sec": [
+        6.5819,
+        7.1797,
+        7.0046
+      ],
+      "median_sec": 7.0046,
+      "min_sec": 6.5819,
+      "max_sec": 7.1797,
+      "rtf": 0.1557,
+      "text_preview": "大家好,欢迎收听今天的节目。人工智能技术在过去几年里取得了飞速的发展,语音识别作为人机交互的重要入口,已经广泛应用于会议记录、字幕生成、智能客服和车载助手等众多场景。今天,我们要测试的是一款基于大模型的语音识别系统,它能够在保证识别准确率的"
+    },
+    {
+      "file": "en_10s.wav",
+      "lang": "en",
+      "lang_name": "English",
+      "duration_sec": 10.0,
+      "times_sec": [
+        2.6418,
+        2.5908,
+        2.6314
+      ],
+      "median_sec": 2.6314,
+      "min_sec": 2.5908,
+      "max_sec": 2.6418,
+      "rtf": 0.2631,
+      "text_preview": " Hello everyone, and welcome to today's presentation. Over the past few years, artificial intelligence has advanced at a"
+    },
+    {
+      "file": "en_25s.wav",
+      "lang": "en",
+      "lang_name": "English",
+      "duration_sec": 25.0,
+      "times_sec": [
+        5.3342,
+        5.6723,
+        5.1789
+      ],
+      "median_sec": 5.3342,
+      "min_sec": 5.1789,
+      "max_sec": 5.6723,
+      "rtf": 0.2134,
+      "text_preview": " Hello, everyone, and welcome to today's presentation. Over the past few years, artificial intelligence has advanced at "
+    },
+    {
+      "file": "en_45s.wav",
+      "lang": "en",
+      "lang_name": "English",
+      "duration_sec": 45.0,
+      "times_sec": [
+        4.9694,
+        5.4124,
+        5.6523
+      ],
+      "median_sec": 5.4124,
+      "min_sec": 4.9694,
+      "max_sec": 5.6523,
+      "rtf": 0.1203,
+      "text_preview": " Hello everyone, and welcome to today's presentation. Over the past few years, artificial intelligence has advanced at a"
+    },
+    {
+      "file": "yue_10s.wav",
+      "lang": "yue",
+      "lang_name": "粤语",
+      "duration_sec": 10.0,
+      "times_sec": [
+        2.732,
+        2.6159,
+        3.0628
+      ],
+      "median_sec": 2.732,
+      "min_sec": 2.6159,
+      "max_sec": 3.0628,
+      "rtf": 0.2732,
+      "text_preview": "大家好 欢迎收听今天的GATMO人工智能技出是过去几年入面发展得很快如因失别作为人机复动的"
+    },
+    {
+      "file": "yue_25s.wav",
+      "lang": "yue",
+      "lang_name": "粤语",
+      "duration_sec": 25.0,
+      "times_sec": [
+        5.8936,
+        5.8993,
+        6.0061
+      ],
+      "median_sec": 5.8993,
+      "min_sec": 5.8936,
+      "max_sec": 6.0061,
+      "rtf": 0.236,
+      "text_preview": "大家好 嗨迎收听今天的GATMO人工智能基出是过去几年入面发展得好快如因失别作为人机复动的重要入口已经广泛形容是唯意记落字幕生残只能够覆和迷车仔住守景多的场景今天我们要测车时的一途机遇遇大无成的语音事必系统它可以在部队上"
+    },
+    {
+      "file": "yue_45s.wav",
+      "lang": "yue",
+      "lang_name": "粤语",
+      "duration_sec": 45.0,
+      "times_sec": [
+        6.8124,
+        6.549,
+        6.4724
+      ],
+      "median_sec": 6.549,
+      "min_sec": 6.4724,
+      "max_sec": 6.8124,
+      "rtf": 0.1455,
+      "text_preview": "大家好 欢迎收听今天的GATMO人工智能技出是过去几年入面发展得很快如因失别作为人机复动的重要入口已经广泛形容是唯意记落字幕生残只能够覆和迷车仔住守景多的场景今天我们要测时的是一途机遇遇大无形的语音事必定它可以在保保保保保保自必准卡率的同时"
+    }
+  ]
+}

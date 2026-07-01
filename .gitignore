@@ -52,3 +52,6 @@ Thumbs.db
 /tmp/
 *.tmp
 temp_*
+
+# 基准测试音频素材（体积大，按需用 benchmark/gen_audio.py 重新生成）
+benchmark/audio/*.wav

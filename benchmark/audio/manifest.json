@@ -1,0 +1,83 @@
+[
+  {
+    "file": "zh_10s.wav",
+    "lang": "zh",
+    "lang_name": "中文",
+    "target_sec": 10,
+    "actual_sec": 10.0,
+    "sample_rate": 24000,
+    "voice": "chinese"
+  },
+  {
+    "file": "zh_25s.wav",
+    "lang": "zh",
+    "lang_name": "中文",
+    "target_sec": 25,
+    "actual_sec": 25.0,
+    "sample_rate": 24000,
+    "voice": "chinese"
+  },
+  {
+    "file": "zh_45s.wav",
+    "lang": "zh",
+    "lang_name": "中文",
+    "target_sec": 45,
+    "actual_sec": 45.0,
+    "sample_rate": 24000,
+    "voice": "chinese"
+  },
+  {
+    "file": "en_10s.wav",
+    "lang": "en",
+    "lang_name": "English",
+    "target_sec": 10,
+    "actual_sec": 10.0,
+    "sample_rate": 24000,
+    "voice": "english"
+  },
+  {
+    "file": "en_25s.wav",
+    "lang": "en",
+    "lang_name": "English",
+    "target_sec": 25,
+    "actual_sec": 25.0,
+    "sample_rate": 24000,
+    "voice": "english"
+  },
+  {
+    "file": "en_45s.wav",
+    "lang": "en",
+    "lang_name": "English",
+    "target_sec": 45,
+    "actual_sec": 45.0,
+    "sample_rate": 24000,
+    "voice": "english"
+  },
+  {
+    "file": "yue_10s.wav",
+    "lang": "yue",
+    "lang_name": "粤语",
+    "target_sec": 10,
+    "actual_sec": 10.0,
+    "sample_rate": 24000,
+    "voice": "cantonese"
+  },
+  {
+    "file": "yue_25s.wav",
+    "lang": "yue",
+    "lang_name": "粤语",
+    "target_sec": 25,
+    "actual_sec": 25.0,
+    "sample_rate": 24000,
+    "voice": "cantonese"
+  },
+  {
+    "file": "yue_45s.wav",
+    "lang": "yue",
+    "lang_name": "粤语",
+    "target_sec": 45,
+    "actual_sec": 45.0,
+    "sample_rate": 24000,
+    "voice": "cantonese"
+  }
+]

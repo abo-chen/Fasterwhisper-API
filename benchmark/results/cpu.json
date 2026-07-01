@@ -1,0 +1,185 @@
+{
+  "mode": "cpu",
+  "device": "cpu",
+  "compute_type": "int8",
+  "cpu_threads": 8,
+  "beam_size": 5,
+  "repeats": 3,
+  "model": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+  "load_time_sec": 1.122,
+  "rss_after_load_mb": 2081.4,
+  "gpu_after_load_mb": 0.0,
+  "runs": [
+    {
+      "file": "zh_10s.wav",
+      "lang": "zh",
+      "lang_name": "中文",
+      "duration_sec": 10.0,
+      "infer_times_sec": [
+        2.5617,
+        4.4893,
+        3.9588
+      ],
+      "infer_median_sec": 3.9588,
+      "infer_min_sec": 2.5617,
+      "infer_max_sec": 4.4893,
+      "rtf_median": 0.3959,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "zh",
+      "text_preview": "大家好,欢迎收听今天的节目 人工智能技术在过去几年里取得了飞速的发展 语音识别作为人机交互的重要性"
+    },
+    {
+      "file": "zh_25s.wav",
+      "lang": "zh",
+      "lang_name": "中文",
+      "duration_sec": 25.0,
+      "infer_times_sec": [
+        4.8383,
+        5.105,
+        4.46
+      ],
+      "infer_median_sec": 4.8383,
+      "infer_min_sec": 4.46,
+      "infer_max_sec": 5.105,
+      "rtf_median": 0.1935,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "zh",
+      "text_preview": "大家好,欢迎收听今天的节目。 人工智能技术在过去几年里取得了飞速的发展, 语音识别作为人机交互的重要入口, 已经广泛应用于会议记录、字幕生成、 智能客服和车载助手等众多场景。 今天,我们要测试的是一款基于大模型的语音识别系统,"
+    },
+    {
+      "file": "zh_45s.wav",
+      "lang": "zh",
+      "lang_name": "中文",
+      "duration_sec": 45.0,
+      "infer_times_sec": [
+        12.3435,
+        10.8301,
+        9.7564
+      ],
+      "infer_median_sec": 10.8301,
+      "infer_min_sec": 9.7564,
+      "infer_max_sec": 12.3435,
+      "rtf_median": 0.2407,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "zh",
+      "text_preview": "大家好,欢迎收听今天的节目。 人工智能技术在过去几年里取得了飞速的发展, 语音识别作为人机交互的重要入口, 已经广泛应用于会议记录、字幕生成、 智能客服和车载助手等众多场景。 今天,我们要测试的是一款基于大模型的语音识别系统, 它能够在保证"
+    },
+    {
+      "file": "en_10s.wav",
+      "lang": "en",
+      "lang_name": "English",
+      "duration_sec": 10.0,
+      "infer_times_sec": [
+        2.9015,
+        2.6472,
+        2.8117
+      ],
+      "infer_median_sec": 2.8117,
+      "infer_min_sec": 2.6472,
+      "infer_max_sec": 2.9015,
+      "rtf_median": 0.2812,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "en",
+      "text_preview": "Hello everyone, and welcome to today's presentation.  Over the past few years, artificial intelligence has advanced at a"
+    },
+    {
+      "file": "en_25s.wav",
+      "lang": "en",
+      "lang_name": "English",
+      "duration_sec": 25.0,
+      "infer_times_sec": [
+        2.9234,
+        3.1262,
+        2.9043
+      ],
+      "infer_median_sec": 2.9234,
+      "infer_min_sec": 2.9043,
+      "infer_max_sec": 3.1262,
+      "rtf_median": 0.1169,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "en",
+      "text_preview": "Hello, everyone, and welcome to today's presentation.  Over the past few years, artificial intelligence has advanced at "
+    },
+    {
+      "file": "en_45s.wav",
+      "lang": "en",
+      "lang_name": "English",
+      "duration_sec": 45.0,
+      "infer_times_sec": [
+        5.581,
+        5.9254,
+        6.1377
+      ],
+      "infer_median_sec": 5.9254,
+      "infer_min_sec": 5.581,
+      "infer_max_sec": 6.1377,
+      "rtf_median": 0.1317,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "en",
+      "text_preview": "Hello, everyone, and welcome to today's presentation.  Over the past few years, artificial intelligence has advanced at "
+    },
+    {
+      "file": "yue_10s.wav",
+      "lang": "yue",
+      "lang_name": "粤语",
+      "duration_sec": 10.0,
+      "infer_times_sec": [
+        2.6293,
+        2.8152,
+        2.8668
+      ],
+      "infer_median_sec": 2.8152,
+      "infer_min_sec": 2.6293,
+      "infer_max_sec": 2.8668,
+      "rtf_median": 0.2815,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "yue",
+      "text_preview": "大家好,欢迎收听今天的GATMO 人工智能技出是过去几年 入面发展得很快 如因失别作为人机复动的"
+    },
+    {
+      "file": "yue_25s.wav",
+      "lang": "yue",
+      "lang_name": "粤语",
+      "duration_sec": 25.0,
+      "infer_times_sec": [
+        6.0212,
+        5.9879,
+        5.9229
+      ],
+      "infer_median_sec": 5.9879,
+      "infer_min_sec": 5.9229,
+      "infer_max_sec": 6.0212,
+      "rtf_median": 0.2395,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "yue",
+      "text_preview": "大家好,欢迎收听今天的gapmo 人工智能机出是过去几年入面发展得很快 如因失别作为人机复动的重要入口 已经广泛形容是唯意记落 字幕生产 只能够覆和迷车仔住守景多的场景 今天我们要测车时的是一途机遇遇遇大无忍 大无成的语音事必系统 它可以在"
+    },
+    {
+      "file": "yue_45s.wav",
+      "lang": "yue",
+      "lang_name": "粤语",
+      "duration_sec": 45.0,
+      "infer_times_sec": [
+        6.8129,
+        7.2323,
+        6.918
+      ],
+      "infer_median_sec": 6.918,
+      "infer_min_sec": 6.8129,
+      "infer_max_sec": 7.2323,
+      "rtf_median": 0.1537,
+      "gpu_peak_mb": 0.0,
+      "rss_peak_mb": 2081.4,
+      "detected_language": "yue",
+      "text_preview": "大家好 欢迎收听今天的gapmo 人工智能机出 是过去几年 入面发展得好快 如因失别 作为人机复动的重要入口 已经广泛形容是唯意记落 字幕生残 只能够覆和迷车仔住守景多的场景 今天我们要测事的是一逗机遇遇大无成的语音事必系系细 它可以在保证"
+    }
+  ]
+}
