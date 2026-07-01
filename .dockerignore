@@ -1,0 +1,64 @@
+# ===== 文档（公司内部资产，仅供内部工程师使用，禁止打入镜像）=====
+README.md
+readme-cn.md
+*.md
+docs/
+docs-cn/
+documentation/
+
+# ===== 基准测试（仅本地使用，运行时无需）=====
+benchmark/
+
+# ===== 环境变量 / 密钥（避免泄露）=====
+.env
+.env.*
+*.env
+
+# ===== 版本控制 =====
+.git/
+.gitignore
+
+# ===== 模型文件（通过 volume 挂载，体积过大）=====
+whisper-models/
+
+# ===== Python 缓存与构建产物 =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ===== 虚拟环境 =====
+.venv/
+venv/
+ENV/
+env/
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+
+# ===== Docker / 部署配置（无需进入镜像）=====
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# ===== 日志与临时文件 =====
+*.log
+*.tmp
+temp_*
+
+# ===== 本地工具脚本（运行时无需）=====
+genapikey.sh
+run.sh

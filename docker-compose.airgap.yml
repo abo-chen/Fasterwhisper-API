@@ -1,0 +1,59 @@
+# docker-compose.airgap.yml
+# 离线(airgap)部署 compose —— 单张 GPU 镜像(whisper-stt:airgap)，通过 profile 选 CPU/GPU。
+# 镜像用 CUDA 基底构建，所以 cpu / gpu 两种推理都能跑：到目标机看显存再决定。
+#
+# 用法(在本文件与 whisper-models/ 所在目录下):
+#   docker compose -f docker-compose.airgap.yml --profile cpu up -d   # CPU 推理(默认/兜底)
+#   docker compose -f docker-compose.airgap.yml --profile gpu up -d   # GPU 推理(有富余显存时)
+#
+# 只会启动其中一个 profile 的服务，两者不会同时跑。
+
+services:
+  # ---- CPU 推理(兜底，目标机只要有 Docker) ----
+  whisper-cpu:
+    profiles: ["cpu"]
+    image: whisper-stt:airgap
+    container_name: whisper-airgap-cpu
+    ports:
+      - "5012:8000"
+    environment:
+      - WHISPER_DEVICE=cpu
+      - WHISPER_COMPUTE_TYPE=int8          # CPU 唯一合理选项
+      - WHISPER_THREADS=8
+      - WHISPER_MODEL=large-v3-turbo
+      - WHISPER_CACHE_DIR=/root/.cache/huggingface/hub
+      - WHISPER_IDLE_TIMEOUT=600
+      - HF_HUB_OFFLINE=1                   # 离线强制本地，绝不联网
+      - GPU_MEMORY_LIMIT_MB=0
+      - API_KEY_REQUIRED=false
+    volumes:
+      - ./whisper-models:/root/.cache/huggingface
+    restart: unless-stopped
+
+  # ---- GPU 推理(有富余显存时；需目标机装好 NVIDIA 驱动 + nvidia-ctk) ----
+  whisper-gpu:
+    profiles: ["gpu"]
+    image: whisper-stt:airgap
+    container_name: whisper-airgap-gpu
+    ports:
+      - "5012:8000"
+    environment:
+      - WHISPER_DEVICE=cuda
+      - WHISPER_COMPUTE_TYPE=float16
+      - WHISPER_THREADS=8                  # GPU 下被忽略
+      - WHISPER_MODEL=large-v3-turbo
+      - WHISPER_CACHE_DIR=/root/.cache/huggingface/hub
+      - WHISPER_IDLE_TIMEOUT=600
+      - HF_HUB_OFFLINE=1
+      - GPU_MEMORY_LIMIT_MB=0
+      - API_KEY_REQUIRED=false
+    volumes:
+      - ./whisper-models:/root/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
